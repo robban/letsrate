@@ -10,13 +10,16 @@ module Letsrate
         r.stars = stars
         r.rater = user
       end
-      if dirichlet_method
-        update_rate_average_dirichlet(stars, dimension)
-      else
-        update_rate_average(stars, dimension)
-      end
     else
-      raise "User has already rated."
+      previous_rate = rates(dimension).where(:rater_id => user_id).first
+      previous_rate.stars = stars
+      previous_rate.save!
+    end
+
+    if dirichlet_method
+      update_rate_average_dirichlet(stars, dimension)
+    else
+      update_rate_average(stars, dimension)
     end
   end
 
